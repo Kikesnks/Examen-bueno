@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos de Plantilla</title>
+    <!-- Bootstrap 5 para estilos rápidos y profesionales -->
+    <link href="https://cdn.jsdelivr.net" rel="stylesheet">
+    <!-- Google Fonts para una tipografía más limpia -->
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container-table {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        h1 {
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 3px solid #0d6efd;
+            display: inline-block;
+            padding-bottom: 10px;
+            margin-bottom: 2rem;
+        }
+        .table thead {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f1f7ff;
+            transition: 0.3s;
+        }
+        .badge-salario {
+            background-color: #d1e7dd;
+            color: #0f5132;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% include 'menu.html' %}
+    <h2>Selecciona un hospital de la lista para ver su plantilla</h2>
+    <br><br>
+    <form method="post">
+        {% csrf_token %}
+        <select name="cajaHosp">
+        {% for item in hospitales %}
+        <option value="{{item.cod}}">{{item.nombre}}</option>
+        {% endfor %}
+        </select>
+        <br><br>
+        <button>CONSULTAR</button>
+    </form>
+    {% if plantilla %}
+    <div class="container">
+        <div class="container-table">
+            <h1>Listado de Plantilla</h1>
+            
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>HOSPITAL</th>
+                            <th>SALA</th>
+                            <th>EMPLEADO</th>
+                            <th>APELLIDO</th>
+                            <th>FUNCIÓN</th>
+                            <th>TURNO</th>
+                            <th class="text-end">SALARIO</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dato in plantilla %}
+                        <tr>
+                            <td><span class="text-muted">#</span>{{ dato.hcod }}</td>
+                            <td>{{ dato.scod }}</td>
+                            <td><strong>{{ dato.empno }}</strong></td>
+                            <td>{{ dato.apellido }}</td>
+                            <td><span class="badge bg-light text-dark border">{{ dato.funcion }}</span></td>
+                            <td>
+                                {% if dato.turno == 'T' %}
+                                    <span class="text-warning">☀️ Tarde</span>
+                                {% else %}
+                                    <span class="text-primary">🌙 Mañana</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <span class="badge-salario">{{ dato.salario }}€</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Script de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net"></script>
+</body>
+</html>
