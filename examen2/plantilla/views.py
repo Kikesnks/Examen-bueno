@@ -10,11 +10,12 @@ def plantilla(request):
     listaHosp = servicio.getListaHospitales()
     if ('cajaHosp' in request.POST):
         hosp_cod = int(request.POST['cajaHosp'])
-        codigo = servicio.getNombreHospital(hosp_cod)
-        lista = servicio.getPlantilla(codigo)
+#        nombre = servicio.getNombreHospital(hosp_cod)
+        lista = servicio.getPlantilla(hosp_cod)
         informacion = {
             "plantilla": lista,
-            "hospitales": listaHosp
+            "hospitales": listaHosp,
+ #           "nombre": nombre
         }
         return render(request, 'plantilla.html', informacion)
     else:

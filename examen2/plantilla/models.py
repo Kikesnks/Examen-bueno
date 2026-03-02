@@ -5,7 +5,7 @@ import oracledb
 
 class Plantilla:
     def __init__(self):
-        self.hcod = 0
+        self.nombreHosp = ""
         self.scod = 0
         self.empno = 0
         self.apellido = ""
@@ -19,17 +19,21 @@ class Hospital:
         self.nombre = ""
 
 class ServicioPlantilla():
-    def __init__(self):
         self.conexion = oracledb.connect(user="SYSTEM", password="oracle", dsn="localhost/FREEPDB1")
     
-    def getPlantilla(self, hospital):
-        sql = "select * from PLANTILLA where HOSPITAL_COD = :cod"
+    def getPlantilla(self, id):
         cursor = self.conexion.cursor()
-        cursor.execute(sql, (hospital,))
+        sql ="select NOMBRE from HOSPITAL where HOSPITAL_COD = :cod"
+        cursor.execute(sql, (id,))
+        hosp = cursor.fetchone()
+        name = hosp[0]
+        sql = "select * from PLANTILLA where HOSPITAL_COD = :cod"
+#        hospital = Hospital()
+        cursor.execute(sql, (id,))
         listaPlantilla = []
         for dato in cursor:
             plant = Plantilla()
-            plant.hcod = dato[0]
+            plant.nombreHosp = name
             plant.scod = dato[1]
             plant.empno = dato[2]
             plant.apellido = dato[3]
@@ -42,13 +46,15 @@ class ServicioPlantilla():
         return listaPlantilla
     
     def getNombreHospital(self, id):
-        sql = "select HOSPITAL_COD from HOSPITAL where HOSPITAL_COD = :cod"
+        sql = "select NOMBRE from HOSPITAL where HOSPITAL_COD = :cod"
         cursor = self.conexion.cursor()
         cursor.execute(sql, (id,))
         hosp = cursor.fetchone()
-        hospital_cod = hosp[0]
+#        hospital = Hospital()
+        hospital = hosp[0]
+#        hospital.nombre = hosp[1]
         cursor.close()
-        return hospital_cod
+        return hospital
 
     def getListaHospitales(self):
         sql ="select NOMBRE, HOSPITAL_COD from HOSPITAL"
